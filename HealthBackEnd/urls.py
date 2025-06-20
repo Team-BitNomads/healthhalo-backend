@@ -7,4 +7,5 @@ urlpatterns = [
     path('api/health-sub/', include('healthSubs.urls')),
     path('api/chatbot/', include('chatbot.urls')),
     path('api/wallet/', include('wallets.urls')),
+    path('api/circles/', include('circles.urls')),
 ]

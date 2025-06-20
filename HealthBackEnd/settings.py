@@ -26,7 +26,9 @@ INSTALLED_APPS = [
     'healthSubs',
     'chatbot',
     'wallets',
+    'circles',
     'corsheaders',
+    'django_celery_beat',
     
     # Required for DRF + JWT
     'rest_framework',
@@ -69,6 +71,16 @@ TEMPLATES = [
         },
     },
 ]
+
+# Celery Config
+CELERY_BROKER_URL = os.getenv("UPSTASH_REDIS_URL")
+
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Lagos'
 
 AUTH_USER_MODEL = 'auths.CustomUser'
 
