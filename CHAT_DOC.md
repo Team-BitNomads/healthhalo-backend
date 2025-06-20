@@ -20,7 +20,7 @@ Authorization: Bearer <your_access_token>
 ## 📍 Endpoint
 
 ```
-POST /api/health-sub/
+POST /api/chatbot/
 ```
 
 ---
