@@ -1,0 +1,6 @@
+From=%2B15551234567
+&Body=How+can+I+cure+this+bruise
+&MediaUrl0=https://media.istockphoto.com/id/174630516/photo/bruise.jpg?s=612x612&w=0&k=20&c=NE93WYZCbYXy8oP_AZlsBeOqO7cVgKOHBA_GqHktXMk=
+&MediaContentType0=image/jpeg
+&AccountSid=ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+&MessageSid=SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
