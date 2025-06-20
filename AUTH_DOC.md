@@ -295,5 +295,9 @@ api.interceptors.response.use(
   }
 );
 ```
+---
 
-© 2025 HealthApp API Docs
+## 👨‍💻 Maintainer
+
+
+© 2025 HealthHalo API Docs

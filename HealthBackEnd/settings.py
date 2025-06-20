@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'auths',
     'healthSubs',
     'chatbot',
+    'wallets',
     'corsheaders',
     
     # Required for DRF + JWT

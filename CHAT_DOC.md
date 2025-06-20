@@ -124,4 +124,4 @@ Returns a JSON object with the AI-generated message and optional helpful links.
 ## 👨‍💻 Maintainer
 
 
-© 2025 HealthApp API Docs
+© 2025 HealthHalo API Docs
