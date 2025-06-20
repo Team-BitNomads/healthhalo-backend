@@ -12,6 +12,8 @@ DEBUG = os.getenv("DEBUG")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 USE_HTTPS = os.getenv('USE_HTTPS', 'False').lower() in ('true', '1', 'yes')
 
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
@@ -22,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'auths',
     'healthSubs',
+    'chatbot',
     'corsheaders',
     
     # Required for DRF + JWT
@@ -31,6 +34,7 @@ INSTALLED_APPS = [
 ]
 
 # CORS Settings
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if os.getenv("CORS_ALLOWED_ORIGINS") else []
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if os.getenv("CSRF_TRUSTED_ORIGINS") else []
 
