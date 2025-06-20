@@ -2,15 +2,16 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from healthSubs.models import HealthProfile
-from .models import Conversation
-from .openai_utilis import generate_health_response, generate_basic_health_response
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.files.uploadedfile import InMemoryUploadedFile
-import tempfile
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.forms.models import model_to_dict
+from healthSubs.models import HealthProfile
+from .models import Conversation
+from .openai_utilis import generate_health_response, generate_basic_health_response
+import tempfile
 import requests
 
 User = get_user_model()
@@ -22,30 +23,22 @@ class HealthChatbotView(APIView):
         user = request.user
         prompt = request.data.get("prompt")
         image_file = request.FILES.get("image")
-        audio_file = request.FILES.get("audio")  # New audio input
+        audio_file = request.FILES.get("audio")
 
         if not (prompt or image_file or audio_file):
             return Response({"error": "Provide text, image, or audio."}, status=400)
 
         try:
             health_profile = HealthProfile.objects.get(user=user)
-            health_context = {
-                **vars(health_profile),
-                "bmi": health_profile.bmi,
-                "is_complete": all([
-                    health_profile.conditions,
-                    health_profile.allergies,
-                    health_profile.income_range,
-                ]),
-            }
+            profile_dict = model_to_dict(health_profile)
         except HealthProfile.DoesNotExist:
-            health_context = {"is_complete": False}
+            profile_dict = {}
 
         ai_response = generate_health_response(
-            user_context=health_context,
+            user_data=profile_dict,
             prompt=prompt,
             image_file=image_file,
-            audio_file=audio_file,  # Pass audio file
+            audio_file=audio_file,
         )
 
         Conversation.objects.create(
@@ -54,6 +47,7 @@ class HealthChatbotView(APIView):
             response=ai_response,
         )
         return Response(ai_response)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class TwilioWebhookView(View):

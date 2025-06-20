@@ -17,7 +17,7 @@ def transcribe_audio(audio_file):
     except Exception as e:
         return None
 
-def generate_health_response(user_context, prompt=None, image_file=None, audio_file=None):
+def generate_health_response(user_data, prompt=None, image_file=None, audio_file=None):
     # 1. Process audio if provided (overrides text prompt)
     if audio_file:
         prompt = transcribe_audio(audio_file)
@@ -27,7 +27,7 @@ def generate_health_response(user_context, prompt=None, image_file=None, audio_f
     # 2. Detect missing fields
     missing_fields = [
         field for field in ["conditions", "allergies", "income_range"]
-        if not user_context.get(field)
+        if not user_data.get(field)
     ]
     reminder = (
         f"\n(For better advice, update your profile: {', '.join(missing_fields)}!)"
@@ -42,10 +42,19 @@ def generate_health_response(user_context, prompt=None, image_file=None, audio_f
     - General health questions (e.g., symptoms, prevention, wellness)
     - Health insurance advice if needed
 
-    If the user's profile contains data like health conditions, allergies, or income range, use it to personalize your response.  
-    If some data is missing, politely remind the user at the end to update their profile for more accurate help.
+    You have full access to the user's health profile via the `user_context`. 
+    This includes fields such as:
+    - Health conditions (e.g., asthma, diabetes)
+    - Allergies
+    - Income range
+    - Lifestyle habits (e.g., is_smoker, alcohol_use, exercise_frequency, diet_type)
+    - Medical history (e.g., surgeries, medications, family history)
+
+    Use all this information to personalize your response. 
+    If any of this data is missing, politely remind the user to update their profile for more accurate help at the end.
 
     Always respond in the user's language.
+    Don't make your response with the same feel everytime, be friendly and don't sound too professional.
 
     ⚠️ Format your entire answer as a JSON object with this structure:
     {{
@@ -58,7 +67,10 @@ def generate_health_response(user_context, prompt=None, image_file=None, audio_f
     """
 
     # 4. Prepare messages
-    messages = [{"role": "system", "content": system_prompt}]
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "system", "content": f"Here is the user's health profile data:\n{json.dumps(user_data, indent=2, default=str)}"}
+    ]
     
     if prompt:
         messages.append({"role": "user", "content": prompt})
