@@ -85,3 +85,52 @@ def generate_health_response(user_context, prompt=None, image_file=None, audio_f
         return {"text": ai_response.get("text", "No response generated")} | ai_response
     except Exception as e:
         return {"text": f"Error: {str(e)}"}
+    
+def generate_basic_health_response(prompt=None, image_file=None, audio_file=None):
+    from openai import OpenAI
+    import base64
+    import json
+
+    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+
+    if audio_file:
+        prompt = transcribe_audio(audio_file)
+        if not prompt:
+            return {"text": "Could not understand your voice message. Please try again."}
+
+    system_prompt = """
+    You are a helpful AI health assistant. Reply to any health-related question in simple terms.
+    If the question is unclear, ask the user to clarify.
+    Detect the language in the question and ensure to reply in that language.
+    Always return a JSON object like this:
+    {
+      "text": "your reply",
+      "links": ["optional", "relevant", "links"]
+    }
+    """
+
+    messages = [{"role": "system", "content": system_prompt}]
+    if prompt:
+        messages.append({"role": "user", "content": prompt})
+
+    if image_file:
+        base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+        messages.append({
+            "role": "user",
+            "content": [{
+                "type": "image_url",
+                "image_url": f"data:image/jpeg;base64,{base64_image}"
+            }]
+        })
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=messages,
+            response_format={"type": "json_object"},
+            temperature=0.4
+        )
+        ai_response = json.loads(response.choices[0].message.content)
+        return {"text": ai_response.get("text", "No response generated")} | ai_response
+    except Exception as e:
+        return {"text": f"Error: {str(e)}"}
