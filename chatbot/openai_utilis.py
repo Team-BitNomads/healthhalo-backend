@@ -40,9 +40,9 @@ def generate_health_response(user_context, prompt=None, image_file=None, audio_f
     1. Respond in the USER'S LANGUAGE (auto-detect from their input).
     2. For health queries, use: {user_context.get('conditions', [])}.
     3. For insurance queries:
-       - If uninsured: Suggest plans with links.
-       - If insured: Guide on current coverage.
-    4. Format: Always return {{"text": "response"}} with optional "links".
+    - If uninsured: Suggest plans with links.
+    - If insured: Guide on current coverage.
+    4. Format: Always return a JSON object with keys "text" and optional "links", for example: {{"text": "response"}}.
     5. Reminder: "{reminder}"
     """
 
